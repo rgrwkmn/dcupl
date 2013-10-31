@@ -144,19 +144,19 @@ door.prototype = {
 };
 
 var doorLogger = function(name, doorState) {
-    console.log('Something just happened with the '+name+' door and now it is '+doorState);
+    console.log('Something just happened with a '+name+' door and now it is '+doorState);
 }
 var doorNewLogger = function(name, doorState) {
     console.log('Look, a new '+name+' door!');
 }
 var doorOpenLogger = function(name) {
-    console.log('Someone opened the '+name+' door.');
+    console.log('Someone opened a '+name+' door.');
 }
 var doorCloseLogger = function(name) {
-    console.log('Someone closed the '+name+' door.');
+    console.log('Someone closed a '+name+' door.');
 }
 var doorInstallLogger = function(name, doorState, installationFee) {
-    console.log('The '+name+' door was installed and it cost '+installationFee+' BTC.');
+    console.log('A '+name+' door was installed and it cost '+installationFee+' BTC.');
 }
 // only subscribes to closet door events
 var closetDoorOpenLogger = function(name, doorState) {
@@ -173,5 +173,13 @@ var myNewClosetDoor = new Door('closet');
 myNewClosetDoor.install();
 myNewClosetDoor.open();
 myNewClosetDoor.close();
+```
 
+Output of the Big Example
+```
+> Look, a new closet door!
+> A closet door was installed and it cost 0.65 BTC
+> Someone opened a closet door.
+> A closet door was opened!
+> Someone closed a closet door.
 ```
