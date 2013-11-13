@@ -1,0 +1,10 @@
+{
+    "name": "dcupl",
+    "description": "A redundant Pub/Sub implementation featuring publish, subscribe, unsubscribe, argument passing, event hierarchy and latecomer functionality.",
+    "main": "dcupl.js",
+    "homepage": "https://github.com/rgrwkmn/dcupl",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/rgrwkmn/dcupl.git"
+    }
+}
