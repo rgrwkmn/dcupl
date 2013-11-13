@@ -6,5 +6,6 @@
     "repository": {
         "type": "git",
         "url": "git://github.com/rgrwkmn/dcupl.git"
-    }
+    },
+    "version": "1.0.0"
 }
