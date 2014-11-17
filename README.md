@@ -176,13 +176,10 @@ dcupl.subscribe('door.install', doorInstallLogger, true);
 Output of the Big Example
 ```
 Look, a new closet door!
-Something just happened with a closet door and now it is undefined
-Something just happened with a closet door and now it is closed
+Something just happened with a closet door.
 A closet door was opened!
 Someone opened a closet door.
-Something just happened with a closet door and now it is open
 Someone closed a closet door.
-Something just happened with a closet door and now it is closed
 A closet door was installed and it cost 0.65 BTC.
 ```
 
