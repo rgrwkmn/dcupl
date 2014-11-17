@@ -5,7 +5,7 @@
     "homepage": "https://github.com/rgrwkmn/dcupl",
     "repository": {
         "type": "git",
-        "url": "git://github.com/rgrwkmn/dcupl.git"
+        "url": "git://github.com/rgrwkmn/dcupl.git#1.0.0"
     },
     "version": "1.0.0"
 }

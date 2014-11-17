@@ -21,17 +21,17 @@ dcupl.publish('doorOpen'); // calls the subscribed function
 
 Unsubscribe
 
-Requires the same arguments as subscribing. Pass the event and the function.
+The subscribe method returns a subscription object. Calling the unsubscribe function on the subscription object will remove that subscription's callback from dcupl. This used to be achieved by calling `dcupl.unsubscribe` with the event and the function to unsubscribe but the new method is much more straightforward.
 ``` javascript
 var dcupl = require('dcupl');
 
 var doorOpenLogger = function() {
     console.log('Someone opened the door.');
-}
+};
 
-dcupl.subscribe('doorOpen', doorOpenLogger);
+var sub = dcupl.subscribe('doorOpen', doorOpenLogger);
 dcupl.publish('doorOpen'); // calls doorOpenLogger
-dcupl.unsubscribe('doorOpen', doorOpenLogger);
+sub.unsubscribe();
 dcupl.publish('doorOpen'); // doesn't call doorOpenLogger
 ```
 
@@ -44,10 +44,10 @@ var dcupl = require('dcupl');
 
 var doorLogger = function() {
     console.log('Something just happened with the door');
-}
+};
 var doorOpenLogger = function() {
     console.log('Someone opened the door.');
-}
+};
 
 dcupl.subscribe('door', doorLogger);
 dcupl.subscribe('door.open', doorOpenLogger);
@@ -65,7 +65,7 @@ dcupl.publish('door.install'); // has no subscribers
 
 var doorInstallLogger = function() {
     console.log('The door was installed');
-}
+};
 
 // set `latecomer` arg
 dcupl.subscribe('door.install', doorInstallLogger, true); // called immediately since door.install was already published
@@ -82,7 +82,7 @@ dcupl.publish('door.install', installationFee);
 
 var doorInstallLogger = function(installationFee) {
     console.log('The door was installed and it cost '+installationFee+' BTC');
-}
+};
 dcupl.subscribe('door.install', doorInstallLogger, true); // called immediately with installationFee passed
 ```
 
@@ -116,70 +116,79 @@ Big Example
 ``` javascript
 var dcupl = require('dcupl');
 
-var door = function(name) {
+var Door = function(name) {
     this.name = name || this.name;
     dcupl.publish('door.new.'+name, this.name, this.doorState);
 };
 
-door.prototype = {
+Door.prototype = {
     name: 'generic',
     state: 'new',
     installationFee: 0.65,
     install: function() {
         this.doorState = 'closed';
-        dcupl.publish('door.install.'+name, this.name, this.doorState, this.installationFee);
+        dcupl.publish('door.install.'+this.name, this.name, this.doorState, this.installationFee);
     },
     open: function() {
         this.doorState = 'open';
-        dcupl.publish('door.open.'+name, this.name, this.doorState);
+        dcupl.publish('door.open.'+this.name, this.name, this.doorState);
     },
     close: function() {
         this.doorState = 'closed';
-        dcupl.publish('door.close.'+name, this.name, this.doorState);
-    },
-    install: function() {
-        this.doorState = 'closed';
-        dcupl.publish('door.install.'+name, this.name, this.doorState, this.installationFee);
+        dcupl.publish('door.close.'+this.name, this.name, this.doorState);
     }
 };
 
 var doorLogger = function(name, doorState) {
-    console.log('Something just happened with a '+name+' door and now it is '+doorState);
-}
+    console.log('Something just happened with a '+name+' door.');
+};
 var doorNewLogger = function(name, doorState) {
     console.log('Look, a new '+name+' door!');
-}
+};
 var doorOpenLogger = function(name) {
     console.log('Someone opened a '+name+' door.');
-}
+};
 var doorCloseLogger = function(name) {
     console.log('Someone closed a '+name+' door.');
-}
+};
 var doorInstallLogger = function(name, doorState, installationFee) {
     console.log('A '+name+' door was installed and it cost '+installationFee+' BTC.');
-}
+};
 // only subscribes to closet door events
 var closetDoorOpenLogger = function(name, doorState) {
     console.log('A closet door was opened!');
 }
-dcupl.subscribe('door', doorLogger);
+var annoyingLog = dcupl.subscribe('door', doorLogger);
 dcupl.subscribe('door.new', doorNewLogger);
 dcupl.subscribe('door.open', doorOpenLogger);
 dcupl.subscribe('door.close', doorCloseLogger);
 dcupl.subscribe('door.open.closet', closetDoorOpenLogger);
-dcupl.subscribe('door.install', doorInstallLogger, true);
 
 var myNewClosetDoor = new Door('closet');
+annoyingLog.unsubscribe();
 myNewClosetDoor.install();
 myNewClosetDoor.open();
 myNewClosetDoor.close();
+
+dcupl.subscribe('door.install', doorInstallLogger, true);
 ```
 
 Output of the Big Example
 ```
-> Look, a new closet door!
-> A closet door was installed and it cost 0.65 BTC
-> Someone opened a closet door.
-> A closet door was opened!
-> Someone closed a closet door.
+Look, a new closet door!
+Something just happened with a closet door and now it is undefined
+Something just happened with a closet door and now it is closed
+A closet door was opened!
+Someone opened a closet door.
+Something just happened with a closet door and now it is open
+Someone closed a closet door.
+Something just happened with a closet door and now it is closed
+A closet door was installed and it cost 0.65 BTC.
+```
+
+Tests
+---
+Run the tests.js script with node to run the big example above.
+```
+node tests.js
 ```
